@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore"; 
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAcmBaZz7R8hSBR8cwW0dw0M2zCPr1_KII",
@@ -32,7 +32,7 @@ export const registerUser = async (email, password) => {
 export const loginUser = async (email, password) => {
     try {
         const response = await signInWithEmailAndPassword(auth, email, password);
-        return response.user;
+        return response.user.providerData[0];
     }
     catch (error) {
         const errorCode = error.code;
@@ -46,7 +46,6 @@ export const signoutUser = async () => {
     try {
         await signOut(auth);
         alert('Signed out successfully!');
-        localStorage.clear();
         return true;
     }
     catch (error) {
@@ -60,13 +59,85 @@ export const signoutUser = async () => {
 
 export const saveUser = async (id) => {
     try {
-        await setDoc(doc(db, "users", id), {
-            // id as placeholders, will update later after edits
-            name: id, 
-            location: id,
-            profession: id,
-            visited: id,
-            trips: id
+        const userRef = doc(db, "users", id);
+        const response = await getDoc(userRef);
+            if (response.exists()) {
+                return response.data();
+            }
+        else {
+            try {
+                await setDoc(doc(db, "users", id), {
+                    // id as placeholders, will update later after edits
+                    name: id,
+                    location: id,
+                    profession: id,
+                    visited: ['placeholder'],
+                    trips: {
+                        upcoming: ['placeholder'],
+                        completed: ['placeholde'],
+                        cancelled: ['placeholder']
+                    }
+                })
+                return true;
+            }
+            catch (error) {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorCode, errorMessage);
+                return null;
+            }
+        }  
+    }
+    catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert(errorCode, errorMessage);
+        return null;
+    }
+}
+
+export const updateUser = async (id, name, location, profession) => {
+    try {
+        const userRef = doc(db, "users", id);
+        await updateDoc(userRef, {
+            name: name,
+            location: location,
+            profession: profession
+        })
+        return true;
+    }
+    catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert(errorCode, errorMessage);
+        return null;
+    }
+}
+
+export const fetchTrips = async (id) => {
+    try {
+        const userRef = doc(db, "users", id);
+        const response = await getDoc(userRef); 
+        if (response.exists()) {
+            return response.data();
+        }
+        else {
+            return null;
+        }
+    }
+    catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert(errorCode, errorMessage);
+        return null;
+    }
+}
+
+export const updateTrips = async (id, tripsArr) => {
+    try {
+        const userRef = doc(db, "users", id);
+        await updateDoc(userRef, {
+            trips: tripsArr
         })
         return true;
     }

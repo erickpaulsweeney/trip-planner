@@ -2,26 +2,27 @@ import styled from "styled-components";
 import { createGlobalStyle } from "styled-components";
 
 export const Global = createGlobalStyle`
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Lato', sans-serif;
-}
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Commissioner', sans-serif;
+    }
 
-body {
-    overflow: hidden;
-    background-image: linear-gradient( 174.2deg,  rgba(255,244,228,1) 7.1%, rgba(240,246,238,1) 67.4% );;
-}
+    body {
+        overflow: hidden;
+        background: #F2F2F2;
+        color: black;
+    }
 
-a {
-    color: inherit;
-    text-decoration: none;
-}
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
 `
 
 export const All = styled.div`
-    width: 70%;
+    max-width: 1000px;
     min-height: 100vh;
     margin: 0 auto;
     display: flex;
@@ -51,29 +52,77 @@ export const SigninInput = styled.input`
     margin-bottom: 20px;
     position: relative;
     background-color: white;
+
+    &:focus {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
+`
+
+export const PlanDateWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+`
+
+export const PlanDateInput = styled.input`
+    width: 50%;
+    font-size: 20px;
+    padding: 10px;
+    border: 1px solid ${props => props.border};
+    border-radius: 5px;
+    margin-bottom: 20px;
+    position: relative;
+    background-color: white;
+
+    &:focus {
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+    }
 `
 
 export const SigninButton = styled.button`
-    width: 10em;
+    min-width: 7em;
     height: 2em;
+    padding: 0 1.5em;
     font-size: 18px;
+    font-weight: 500;
     align-self: center;
+    border: none;
+    border-radius: 3em;
+    background-color: white;
+    border: 2px solid #140F77;
+    color: #140F77;
+    cursor: pointer;
+
+    &:hover {
+        color: white;
+        background-color: #140F77;
+    }
 `
 
 export const NavBar = styled.div`
     width: 100%;
     height: 10em;
-    border-bottom: 1px solid #14213d;
+    border-bottom: 1px solid #0D0D0D;
+    position: relative;
 `
 
 export const NavTitle = styled.div`
     width: 100%;
     height: 50%;
-    font-size: 36px;
-    font-weight: 700;
+    font-family: 'Secular One', sans-serif;
+    font-size: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: #140F77;
+    background: -webkit-radial-gradient(center, #140F77, #3F2793);
+    background: -moz-radial-gradient(center, #140F77, #3F2793);
+    background: radial-gradient(ellipse at center, #140F77, #3F2793);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 `
 
 export const NavItemsDiv = styled.div`
@@ -85,17 +134,19 @@ export const NavItemsDiv = styled.div`
 
 export const NavItem = styled.div`
     height: 100%;
+    font-family: 'Secular One', sans-serif;
     font-size: 20px;
     font-weight: 500;
     display: flex;
     align-items: flex-end;
     padding-bottom: 10px;
     border-bottom: 5px solid transparent;
+    color: #6f6f6f;
     cursor: pointer;
 
     &:hover {
-        color: black;
-        border-bottom: 5px solid #457b9d;
+        color: #0D0D0D;
+        border-bottom: 5px solid #140F77;
     }
 `
 
@@ -107,6 +158,11 @@ export const OutletDiv = styled.div`
     gap: 10px;
 `
 
+export const OutletSubDiv = styled.div`
+    display: flex;
+    justify-content: space-between;
+`
+
 export const Banner = styled.div`
     width: 100%;
     height: 3em;
@@ -115,14 +171,24 @@ export const Banner = styled.div`
     align-items: center;
     font-size: 30px;
     font-weight: 700;
+    position: relative;
 `
 
 export const UserDiv = styled.div`
-    width: 50%;
+    width: 47%;
     min-height: 30em;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    position: relative;
+`
+
+export const UserFullDiv = styled.div`
+    width: 100%;
+    min-height: 30em;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 `
 
 export const NoDetails = styled.div`
@@ -131,13 +197,30 @@ export const NoDetails = styled.div`
     margin-bottom: 20px;
 `
 
+export const UserDetailsDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+    position: relative;
+`
+
 export const UserDetail = styled.div`
-    font-size: 20px;
+    font-size: 18px;
+`
+
+export const Focus = styled.span`
+    font-size: 24px;
+    font-weight: 600;
+    color: #140F77;
+`
+
+export const StyledBold = styled.span`
+    font-weight: 600;
+    color: #140F77;
 `
 
 export const LocOptionsDiv = styled.div`
     position: absolute;
-    top: 80%;
+    top: 100%;
     left: 0;
     right: 0;
     display: flex;
@@ -145,16 +228,13 @@ export const LocOptionsDiv = styled.div`
     z-index: 3;
     background-color: white;
     border: 1px solid gray;
-    border-bottom: none;
-    border-radius: 5px;
 `
 
 export const LocOptions = styled.div`
     width: 100%;
     height: 2em;
-    font-size: 18px;
+    font-size: 14px;
     padding: 5px 10px;
-    border-bottom: 1px solid gray;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -173,9 +253,122 @@ export const LocOptions = styled.div`
 
 export const LocWrapper = styled.div`
     position: relative;
+    margin-bottom: 20px;
 `
 
-export const Focus = styled.span`
-    font-weight: 700;
-    color: #444444;
+export const SignOutButton = styled.div`
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+    width: 6em;
+    height: 2em;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 3em;
+    background-color: white;
+    border: 2px solid #140F77;
+    color: #140F77;
+    cursor: pointer;
+
+    &:hover {
+        color: white;
+        background-color: #140F77;
+    }
+`
+
+export const EditButton = styled.div`
+    position: absolute;
+    top: 0em;
+    right: 0em;
+    width: 7em;
+    height: 2em;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    border-radius: 3em;
+    background-color: white;
+    border: 2px solid #140F77;
+    color: #140F77;
+    z-index: 2;
+    cursor: pointer;
+
+    &:hover {
+        color: white;
+        background-color: #140F77;
+    }
+`
+
+export const TripsDiv = styled.div`
+    width: 100%;
+    height: 7em;
+    padding: 1em;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: white;
+    margin-bottom: 20px;
+    overflow-y: scroll;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+`
+
+export const TripLocationDiv = styled.div`
+    min-width: 10em;
+    max-height: 2.5em;
+    padding: 0.3em 1em;
+    font-size: 14px;
+    border: 1px solid gray;
+    border-radius: 1.5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+`
+
+export const DeleteButton = styled.button`
+    background-color: transparent;
+    color: gray;
+    border: none;
+    border-radius: 50%;
+    height: 1.5em;
+    width: 1.5em;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover {
+        background-color: #140F77;
+        color: white;
+        font-weight: 600;
+    }
+`
+
+export const TripStatus = styled.select`
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 10em;
+    padding: 0.2em 1em;
+    border-radius: 1em;
+    font-size: 14px;
+    background-color: ${props => props.selected};
+    cursor: pointer;
+`
+
+export const TripStatusOption = styled.option`
+    font-size: 14px;
+    display: ${props => props.selected};
+    background-color: white;
 `

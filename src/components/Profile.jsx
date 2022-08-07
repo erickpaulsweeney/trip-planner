@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { updateUser } from '../firebase-config';
 import { setDetails } from '../slices/userSlice';
 import {
     OutletDiv,
@@ -10,16 +11,20 @@ import {
     UserDiv,
     NoDetails,
     UserDetail,
+    UserDetailsDiv, 
     LocOptionsDiv,
     LocOptions,
     LocWrapper, 
-    Focus
+    Focus,
+    OutletSubDiv,
+    EditButton
 } from '../styled-components';
+import { Link } from "react-router-dom";
 
 export default function Profile() {
-    const { token, name, location, profession } = useSelector(state => state.user);
+    const { token, uid, name, location, profession, visited } = useSelector(state => state.user);
     const dispatch = useDispatch();
-    const [edit, setEdit] = useState(name ? false : true);
+    const [edit, setEdit] = useState(name.length === 0);
     const [newName, setNewName] = useState(name);
     const [newLocation, setNewLocation] = useState(location);
     const [newProfession, setNewProfession] = useState(profession);
@@ -31,9 +36,14 @@ export default function Profile() {
         setList(data.features);
     }
 
+    useEffect(() => {
+        setEdit(name.length === 0);
+    }, [name])
+
     return (
         <OutletDiv>
-            <Banner>Welcome back, {name.length > 0 ? name : 'adventurer'}!</Banner>
+            <Banner>Welcome back, {name?.length > 0 ? name : 'adventurer'}!</Banner>
+            <OutletSubDiv>
             {edit &&
                 <UserDiv>
                     <NoDetails>{name ? 'Edit your details' : 'No profile details yet'}</NoDetails>
@@ -41,7 +51,7 @@ export default function Profile() {
                     <SigninInput type='text' name='name' value={newName} onChange={(ev) => setNewName(ev.target.value)} />
                     <SigninLabel htmlFor='location' >Your location:</SigninLabel>
                     <LocWrapper>
-                        <SigninInput type='text' name='location' value={newLocation}
+                        <SigninInput type='text' name='location' value={newLocation} style={{ marginBottom: '0' }}
                             onFocus={(ev) => searchLoc(ev.target.value)}
                             onChange={(ev) => {
                                 setNewLocation(ev.target.value);
@@ -51,7 +61,6 @@ export default function Profile() {
                         {list.length > 0 &&
                             <LocOptionsDiv>
                                 {list.map(el => <LocOptions key={el.id} onClick={() => {
-                                    console.log(el.place_name);
                                     setNewLocation(el.place_name);
                                     setList([]);
                                 }}>{el.place_name}</LocOptions>)}
@@ -62,16 +71,39 @@ export default function Profile() {
                     <SigninInput type='text' name='profession' value={newProfession} onChange={(ev) => setNewProfession(ev.target.value)} />
                     <SigninButton onClick={() => {
                         dispatch(setDetails({ name: newName, location: newLocation, profession: newProfession }));
+                        updateUser(uid, newName, newLocation, newProfession)
                         setEdit(false);
                     }}>Save</SigninButton>
                 </UserDiv>}
             {!edit &&
                 <UserDiv>
-                    <UserDetail>Name: <Focus>{name}</Focus></UserDetail>
-                    <UserDetail>Location: <Focus>{location}</Focus></UserDetail>
-                    <UserDetail>Profession: <Focus>{profession}</Focus></UserDetail>
+                    <EditButton onClick={() => setEdit(true)}>Edit details</EditButton>
+                    <UserDetailsDiv>
+                        <UserDetail>Name</UserDetail>
+                        <UserDetail><Focus>{name}</Focus></UserDetail>
+                    </UserDetailsDiv>
+                    <UserDetailsDiv>
+                        <UserDetail>Location</UserDetail>
+                        <UserDetail><Focus>{location}</Focus></UserDetail>
+                    </UserDetailsDiv>
+                    <UserDetailsDiv>
+                        <UserDetail>Profession</UserDetail>
+                        <UserDetail><Focus>{profession}</Focus></UserDetail>
+                    </UserDetailsDiv>
                 </UserDiv>}
-            
+            <UserDiv>
+                {visited.length === 0 && <UserDetailsDiv>
+                    <Link to="/plan-a-trip"><EditButton>Plan a trip</EditButton></Link>
+                    <NoDetails>No visited locations yet</NoDetails>
+                </UserDetailsDiv>}
+                {visited.length !== 0 && <UserDetailsDiv>
+                    {visited.map(el => <UserDetailsDiv>
+                        <UserDetail>{el.tripName}</UserDetail>
+                        <UserDetail><Focus>{el.location}</Focus></UserDetail>
+                    </UserDetailsDiv>)}
+                </UserDetailsDiv>}
+            </UserDiv>
+            </OutletSubDiv>
         </OutletDiv>
     )
 }

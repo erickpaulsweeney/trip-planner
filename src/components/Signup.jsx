@@ -8,7 +8,7 @@ import {
     SigninInput, 
     SigninButton
 } from '../styled-components';
-import { registerUser } from '../firebase-config';
+import { registerUser, saveUser } from '../firebase-config';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../slices/userSlice';
 
@@ -65,11 +65,12 @@ export default function Signup() {
                 const response = await registerUser(email, password);
                 if (response !== null) {
                     dispatch(setUser({ email: response.email, uid: response.iud }));
+                    saveUser(response.uid);
                     navigate("/");
                 }
             }}>Sign Up</SigninButton>
 
-            <Link to="/login" style={{ alignSelf: 'center', fontSize: '12px', color: 'blue' }}>Already signed up? Login</Link>
+            <Link to="/login" style={{ alignSelf: 'center', fontSize: '12px', color: 'blue', marginTop: '5px' }}>Already signed up? Login</Link>
         </All>
     )
 }

@@ -5,6 +5,7 @@ import Main from './Main';
 import Signup from './Signup';
 import Login from './Login';
 import Profile from './Profile';
+import PlanATrip from './PlanATrip';
 
 export default function App() {
     const navigate = useNavigate();
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Main />}>
                 <Route index element={<Profile />} />
+                <Route path="/plan-a-trip" element={<PlanATrip />} />
             </Route>
         </Routes>
     )
