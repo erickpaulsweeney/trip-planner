@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
     Global, 
@@ -9,7 +9,7 @@ import {
     SigninButton
 } from '../styled-components';
 import { registerUser, saveUser } from '../firebase-config';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../slices/userSlice';
 
 export default function Signup() {
@@ -22,6 +22,12 @@ export default function Signup() {
     const [valid, setValid] = useState(emailError === null && passwordError === null && confirmError === null);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { loggedIn } = useSelector(state => state.user);
+    
+    useEffect(() => {
+        if (loggedIn) navigate("/");
+        // eslint-disable-next-line
+    }, [loggedIn])
 
     return (
         <All>
@@ -64,8 +70,8 @@ export default function Signup() {
             <SigninButton disabled={!valid} onClick={async () => {
                 const response = await registerUser(email, password);
                 if (response !== null) {
-                    dispatch(setUser({ email: response.email, uid: response.iud }));
-                    saveUser(response.uid);
+                    dispatch(setUser({ email: response.email, uid: response.email }));
+                    saveUser(response.email);
                     navigate("/");
                 }
             }}>Sign Up</SigninButton>

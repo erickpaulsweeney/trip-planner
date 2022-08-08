@@ -12,8 +12,8 @@ const userSlice = createSlice({
         name: userData?.name ? userData.name : '',
         location: userData?.location ? userData.location : '', 
         profession: userData?.profession ? userData.profession : '', 
-        visited: [],
-        trips: []
+        visited: userData?.visited ? userData.visited : [],
+        trips: userData?.trips ? userData.trips : []
     }, 
     reducers: {
         setUser: (state, action) => {
@@ -29,7 +29,6 @@ const userSlice = createSlice({
             localStorage.clear();
         },
         setDetails: (state, action) => {
-            console.log(action.payload)
             state.name = action.payload.name;
             state.location = action.payload.location;
             state.profession = action.payload.profession;
@@ -40,12 +39,11 @@ const userSlice = createSlice({
         }, 
         setTrips: (state, action) => {
             state.trips = action.payload;
-            localStorage.setItem('user', JSON.stringify({ ...state, trips: action.payload }));
+            let newVisited = [];
+            action.payload.forEach(el => el.status === 'completed' ? newVisited.push(...el.locations) : null);
+            state.visited = newVisited;
+            localStorage.setItem('user', JSON.stringify({ ...state, trips: action.payload, visited: newVisited }));
         }, 
-        setVisited: (state, action) => {
-            state.visited = action.payload;
-            localStorage.setItem('user', JSON.stringify({ ...state, visited: action.payload }))
-        }
     }
 });
 

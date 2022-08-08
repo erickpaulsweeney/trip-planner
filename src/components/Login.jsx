@@ -10,7 +10,7 @@ import {
 } from '../styled-components';
 import { loginUser, saveUser } from '../firebase-config';
 import { useDispatch, useSelector } from 'react-redux';
-import { setDetails, setTrips, setUser, setVisited } from '../slices/userSlice';
+import { setDetails, setTrips, setUser } from '../slices/userSlice';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -58,17 +58,12 @@ export default function Login() {
                 const response = await loginUser(email, password);
                 if (response !== null) {
                     const prevData = await saveUser(response.uid);
-                    console.log(prevData)
                     if (typeof prevData === 'object') {
                         if (prevData.name !== response.uid && prevData.location !== response.uid && prevData.profession !== response.uid) {
-                            console.log('test')
                             dispatch(setDetails({ name: prevData.name, location: prevData.location, profession: prevData.profession }));
                         }
                         if (prevData.trips[0] !== "placeholder") {
                             dispatch(setTrips(prevData.trips));
-                        }
-                        if (prevData.visited[0] !== "placeholder") {
-                            dispatch(setVisited(prevData.visited));
                         }
                     }
                     dispatch(setUser({ email: response.email, uid: response.uid }));

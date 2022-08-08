@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
 import {
     Banner,
     DeleteButton,
@@ -21,11 +20,11 @@ import {
     UserFullDiv
 } from '../styled-components';
 import { fetchTrips, updateTrips } from '../firebase-config';
+import { setTrips } from '../slices/userSlice';
 
 export default function PlanATrip() {
-    const { token, uid, trips } = useSelector(state => state.user);
+    const { token, uid } = useSelector(state => state.user);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [status, setStatus] = useState(null);
     const [title, setTitle] = useState('');
     const [start, setStart] = useState(null);
@@ -52,15 +51,18 @@ export default function PlanATrip() {
         const fetch = await fetchTrips(uid);
         if (fetch === null) {
             updateTrips(uid, [tripObj]);
+            dispatch(setTrips([tripObj]));
         }
         else {
             const newTrips = fetch.trips;
             if (newTrips[0] === 'placeholder') {
                 updateTrips(uid, [tripObj]);
+                dispatch(setTrips([tripObj]));
             }
             else {
                 newTrips.push(tripObj);
                 updateTrips(uid, newTrips);
+                dispatch(setTrips(newTrips));
             }
         }
         clearForm();
@@ -75,11 +77,17 @@ export default function PlanATrip() {
         setPlace('');
     }
 
+    const removeLocation = (input) => {
+        let newLocations = locations.slice();
+        newLocations.splice(input, 1);
+        setLocations(newLocations);
+    }
+
     return (
         <OutletDiv>
             <Banner>
                 Plan your next adventure
-                <TripStatus onChange={(ev) => setStatus(ev.target.value)}
+                <TripStatus value={status} onChange={(ev) => setStatus(ev.target.value)}
                     selected={status === 'cancelled' ? '#ffb4b4' : status === 'completed' ? '#adff9b' : '#ffe89b'}>
                     <TripStatusOption value='planning'>Planning</TripStatusOption>
                     <TripStatusOption value='completed'>Completed</TripStatusOption>
@@ -122,8 +130,8 @@ export default function PlanATrip() {
                     }
                 </LocWrapper>
                 <TripsDiv>
-                    {locations.length > 0 && locations.map(el => <TripLocationDiv key={el}>
-                        {el} <DeleteButton>✕</DeleteButton>
+                    {locations.length > 0 && locations.map((el, idx) => <TripLocationDiv key={el}>
+                        {el} <DeleteButton onClick={() => removeLocation(idx)}>✕</DeleteButton>
                     </TripLocationDiv>)}
                 </TripsDiv>
                 <SigninButton onClick={handleSubmit}>Save adventure</SigninButton>

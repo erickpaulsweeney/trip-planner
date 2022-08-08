@@ -1,6 +1,11 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+} from "firebase/auth";
 import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -9,7 +14,7 @@ const firebaseConfig = {
     projectId: "trip-planner-c9cf8",
     storageBucket: "trip-planner-c9cf8.appspot.com",
     messagingSenderId: "208922835695",
-    appId: "1:208922835695:web:be221272a259ce540d391a"
+    appId: "1:208922835695:web:be221272a259ce540d391a",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -18,10 +23,13 @@ export const db = getFirestore(app);
 
 export const registerUser = async (email, password) => {
     try {
-        const response = await createUserWithEmailAndPassword(auth, email, password);
+        const response = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
         return response.user;
-    }
-    catch (error) {
+    } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
         alert(errorCode, errorMessage);
@@ -31,120 +39,110 @@ export const registerUser = async (email, password) => {
 
 export const loginUser = async (email, password) => {
     try {
-        const response = await signInWithEmailAndPassword(auth, email, password);
+        const response = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
         return response.user.providerData[0];
-    }
-    catch (error) {
+    } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
         alert(errorCode, errorMessage);
         return null;
     }
-}
+};
 
 export const signoutUser = async () => {
     try {
         await signOut(auth);
-        alert('Signed out successfully!');
+        alert("Signed out successfully!");
         return true;
-    }
-    catch (error) {
+    } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
         alert(errorCode, errorMessage);
         return null;
     }
-
-}
+};
 
 export const saveUser = async (id) => {
     try {
         const userRef = doc(db, "users", id);
         const response = await getDoc(userRef);
-            if (response.exists()) {
-                return response.data();
-            }
-        else {
+        if (response.exists()) {
+            return response.data();
+        } else {
             try {
                 await setDoc(doc(db, "users", id), {
                     // id as placeholders, will update later after edits
                     name: id,
                     location: id,
                     profession: id,
-                    visited: ['placeholder'],
-                    trips: {
-                        upcoming: ['placeholder'],
-                        completed: ['placeholde'],
-                        cancelled: ['placeholder']
-                    }
-                })
+                    trips: ["placeholder"]
+                });
                 return true;
-            }
-            catch (error) {
+            } catch (error) {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 alert(errorCode, errorMessage);
                 return null;
             }
-        }  
-    }
-    catch (error) {
+        }
+    } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
         alert(errorCode, errorMessage);
         return null;
     }
-}
+};
 
 export const updateUser = async (id, name, location, profession) => {
+    console.log(id);
     try {
         const userRef = doc(db, "users", id);
         await updateDoc(userRef, {
             name: name,
             location: location,
-            profession: profession
-        })
+            profession: profession,
+        });
         return true;
-    }
-    catch (error) {
+    } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
         alert(errorCode, errorMessage);
         return null;
     }
-}
+};
 
 export const fetchTrips = async (id) => {
     try {
         const userRef = doc(db, "users", id);
-        const response = await getDoc(userRef); 
+        const response = await getDoc(userRef);
         if (response.exists()) {
             return response.data();
-        }
-        else {
+        } else {
             return null;
         }
-    }
-    catch (error) {
+    } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
         alert(errorCode, errorMessage);
         return null;
     }
-}
+};
 
 export const updateTrips = async (id, tripsArr) => {
     try {
         const userRef = doc(db, "users", id);
         await updateDoc(userRef, {
-            trips: tripsArr
-        })
+            trips: tripsArr,
+        });
         return true;
-    }
-    catch (error) {
+    } catch (error) {
         const errorCode = error.code;
         const errorMessage = error.message;
         alert(errorCode, errorMessage);
         return null;
     }
-}
+};

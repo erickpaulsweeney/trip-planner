@@ -25,6 +25,7 @@ export default function Main() {
                 <NavItemsDiv>
                     <Link to={''}><NavItem>Profile</NavItem></Link>
                     <Link to={'plan-a-trip'}><NavItem>Plan a trip</NavItem></Link>
+                    <Link to={'trips'}><NavItem>Trips</NavItem></Link>
                 </NavItemsDiv>
                 <SignOutButton onClick={() => {
                     dispatch(removeUser());
